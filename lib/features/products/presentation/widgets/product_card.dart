@@ -90,20 +90,18 @@ class ProductCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          PriceFormatter.format(product.price),
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.primary,
-                          ),
-                        ),
-                      ),
-                      _AddButton(onPressed: () => _addToCart(context)),
-                    ],
+                  const SizedBox(height: 6),
+                  Text(
+                    PriceFormatter.format(product.price),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _CartAction(
+                    product: product,
+                    onAdd: () => _addToCart(context),
                   ),
                 ],
               ),
@@ -115,8 +113,46 @@ class ProductCard extends StatelessWidget {
   }
 }
 
+/// Trailing action on a product card: shows an "add" button when the product
+/// isn't in the cart, and swaps to a compact +/- quantity stepper once it is.
+class _CartAction extends StatelessWidget {
+  const _CartAction({required this.product, required this.onAdd});
+
+  final ProductEntity product;
+  final VoidCallback onAdd;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CartCubit, CartState>(
+      buildWhen: (prev, curr) =>
+          prev.quantityOf(product.id) != curr.quantityOf(product.id),
+      builder: (context, state) {
+        final quantity = state.quantityOf(product.id);
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 250),
+          transitionBuilder: (child, animation) =>
+              FadeTransition(opacity: animation, child: child),
+          child: SizedBox(
+            width: double.infinity,
+            child: quantity == 0
+                ? _AddButton(key: const ValueKey('add'), onPressed: onAdd)
+                : _MiniStepper(
+                    key: const ValueKey('stepper'),
+                    quantity: quantity,
+                    onIncrement: () =>
+                        context.read<CartCubit>().increment(product.id),
+                    onDecrement: () =>
+                        context.read<CartCubit>().decrement(product.id),
+                  ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _AddButton extends StatelessWidget {
-  const _AddButton({required this.onPressed});
+  const _AddButton({super.key, required this.onPressed});
 
   final VoidCallback onPressed;
 
@@ -125,18 +161,99 @@ class _AddButton extends StatelessWidget {
     final theme = Theme.of(context);
     return Material(
       color: theme.colorScheme.primary,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         onTap: onPressed,
         child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Icon(
-            Icons.add_shopping_cart_rounded,
-            size: 20,
-            color: theme.colorScheme.onPrimary,
+          padding: const EdgeInsets.symmetric(vertical: 9),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.add_shopping_cart_rounded,
+                size: 18,
+                color: theme.colorScheme.onPrimary,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'Add',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.onPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Compact +/- stepper sized to fit inside a product card.
+class _MiniStepper extends StatelessWidget {
+  const _MiniStepper({
+    super.key,
+    required this.quantity,
+    required this.onIncrement,
+    required this.onDecrement,
+  });
+
+  final int quantity;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _StepIcon(
+            icon: quantity <= 1
+                ? Icons.delete_outline_rounded
+                : Icons.remove_rounded,
+            onTap: onDecrement,
+          ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: Text(
+              '$quantity',
+              key: ValueKey(quantity),
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: theme.colorScheme.onPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          _StepIcon(icon: Icons.add_rounded, onTap: onIncrement),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepIcon extends StatelessWidget {
+  const _StepIcon({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+        child: Icon(icon, size: 18, color: theme.colorScheme.onPrimary),
       ),
     );
   }
