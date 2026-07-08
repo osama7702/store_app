@@ -118,19 +118,136 @@ class ProductDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      // Persistent bottom add-to-cart button.
+      // Persistent bottom bar: "Add to Cart" until the item is in the cart,
+      // then a quantity stepper.
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
           child: SizedBox(
             height: 54,
-            child: ElevatedButton.icon(
-              onPressed: () => _addToCart(context),
-              icon: const Icon(Icons.add_shopping_cart_rounded),
-              label: const Text('Add to Cart'),
+            child: BlocBuilder<CartCubit, CartState>(
+              buildWhen: (prev, curr) =>
+                  prev.quantityOf(product.id) != curr.quantityOf(product.id),
+              builder: (context, state) {
+                final quantity = state.quantityOf(product.id);
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  transitionBuilder: (child, animation) =>
+                      FadeTransition(opacity: animation, child: child),
+                  child: quantity == 0
+                      ? ElevatedButton.icon(
+                          key: const ValueKey('add'),
+                          onPressed: () => _addToCart(context),
+                          icon: const Icon(Icons.add_shopping_cart_rounded),
+                          label: const Text('Add to Cart'),
+                        )
+                      : _DetailsStepper(
+                          key: const ValueKey('stepper'),
+                          quantity: quantity,
+                          onIncrement: () =>
+                              context.read<CartCubit>().increment(product.id),
+                          onDecrement: () =>
+                              context.read<CartCubit>().decrement(product.id),
+                          onViewCart: () => context.push('/cart'),
+                        ),
+                );
+              },
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Bottom-bar quantity stepper shown on the details screen once the product
+/// is in the cart. Includes a shortcut to view the cart.
+class _DetailsStepper extends StatelessWidget {
+  const _DetailsStepper({
+    super.key,
+    required this.quantity,
+    required this.onIncrement,
+    required this.onDecrement,
+    required this.onViewCart,
+  });
+
+  final int quantity;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
+  final VoidCallback onViewCart;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            children: [
+              _StepButton(
+                icon: quantity <= 1
+                    ? Icons.delete_outline_rounded
+                    : Icons.remove_rounded,
+                onTap: onDecrement,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                    '$quantity',
+                    key: ValueKey(quantity),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              _StepButton(icon: Icons.add_rounded, onTap: onIncrement),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: SizedBox(
+            height: 54,
+            child: OutlinedButton.icon(
+              onPressed: onViewCart,
+              icon: const Icon(Icons.shopping_cart_outlined),
+              label: const Text('View Cart'),
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StepButton extends StatelessWidget {
+  const _StepButton({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        child: Icon(icon, size: 22, color: theme.colorScheme.onPrimary),
       ),
     );
   }
