@@ -81,22 +81,27 @@ class ProductCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Row(
                     children: [
+                      Expanded(
+                        child: Text(
+                          PriceFormatter.format(product.price),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
                       Icon(Icons.star_rounded,
                           size: 16, color: Colors.amber.shade600),
                       const SizedBox(width: 2),
                       Text(
                         product.rating.rate.toStringAsFixed(1),
-                        style: theme.textTheme.labelSmall,
+                        style: theme.textTheme.labelMedium
+                            ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    PriceFormatter.format(product.price),
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary,
-                    ),
                   ),
                   const SizedBox(height: 10),
                   _CartAction(
