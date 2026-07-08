@@ -22,13 +22,28 @@ class ProductsRemoteDataSourceImpl implements ProductsRemoteDataSource {
           .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
           .toList();
     } on DioException catch (e) {
-      if (e.type == DioExceptionType.connectionError ||
-          e.type == DioExceptionType.connectionTimeout) {
+      if (_isConnectionError(e)) {
         throw const NetworkException();
       }
       throw ServerException(e.message ?? 'Failed to load products');
     } catch (_) {
       throw const ServerException();
+    }
+  }
+
+  /// True when the failure is due to connectivity rather than the server.
+  bool _isConnectionError(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionError:
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        return true;
+      case DioExceptionType.unknown:
+        // Dio wraps SocketException (no route to host / DNS failure) here.
+        return e.error.toString().contains('SocketException');
+      default:
+        return false;
     }
   }
 }

@@ -16,14 +16,19 @@ class ProductsRepositoryImpl implements ProductsRepository {
 
   @override
   Future<List<ProductEntity>> getProducts() async {
-    if (!await networkInfo.isConnected) {
-      throw const NetworkFailure();
-    }
+    // Let the actual request be the source of truth for connectivity — a
+    // pre-flight ping is flaky on cold start and can fail the first attempt
+    // even when the network is fine.
     try {
       return await remoteDataSource.getProducts();
     } on NetworkException catch (e) {
       throw NetworkFailure(e.message);
     } on ServerException catch (e) {
+      // Distinguish a genuine offline state from a server-side error so the
+      // user sees the most accurate message.
+      if (!await networkInfo.isConnected) {
+        throw const NetworkFailure();
+      }
       throw ServerFailure(e.message);
     }
   }
