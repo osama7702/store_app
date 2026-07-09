@@ -2,26 +2,22 @@ import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../features/cart/data/datasources/cart_local_data_source.dart';
-import '../../features/cart/data/repositories/cart_repository_impl.dart';
-import '../../features/cart/domain/repositories/cart_repository.dart';
-import '../../features/cart/presentation/cubit/cart_cubit.dart';
-import '../../features/favorites/data/datasources/favorites_local_data_source.dart';
-import '../../features/favorites/data/repositories/favorites_repository_impl.dart';
-import '../../features/favorites/domain/repositories/favorites_repository.dart';
-import '../../features/favorites/presentation/cubit/favorites_cubit.dart';
-import '../../features/products/data/datasources/products_remote_data_source.dart';
-import '../../features/products/data/repositories/products_repository_impl.dart';
-import '../../features/products/domain/repositories/products_repository.dart';
-import '../../features/products/presentation/cubit/products_cubit.dart';
+import '../../features/cart/repository/cart_repository.dart';
+import '../../features/cart/viewmodel/cart_view_model.dart';
+import '../../features/favorites/repository/favorites_repository.dart';
+import '../../features/favorites/viewmodel/favorites_view_model.dart';
+import '../../features/products/repository/products_repository.dart';
+import '../../features/products/viewmodel/products_view_model.dart';
 import '../database/app_database.dart';
 import '../network/dio_client.dart';
-import '../network/network_info.dart';
-import '../theme/theme_cubit.dart';
+import '../theme/theme_view_model.dart';
 
 final sl = GetIt.instance;
 
 /// Registers every dependency. Call once at startup before running the app.
+///
+/// Wiring follows MVVM: repositories own data access, view models own state,
+/// and the UI reads view models via BlocProvider.
 Future<void> initDependencies() async {
   // ---- External ----
   final prefs = await SharedPreferences.getInstance();
@@ -30,41 +26,23 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<AppDatabase>(() => AppDatabase());
   sl.registerLazySingleton<InternetConnection>(() => InternetConnection());
 
-  // ---- Core ----
-  sl.registerLazySingleton<NetworkInfo>(
-    () => NetworkInfoImpl(sl<InternetConnection>()),
-  );
-
-  // ---- Products ----
-  sl.registerLazySingleton<ProductsRemoteDataSource>(
-    () => ProductsRemoteDataSourceImpl(sl<DioClient>().dio),
-  );
+  // ---- Repositories ----
   sl.registerLazySingleton<ProductsRepository>(
-    () => ProductsRepositoryImpl(
-      remoteDataSource: sl(),
-      networkInfo: sl(),
+    () => ProductsRepository(
+      dio: sl<DioClient>().dio,
+      connection: sl<InternetConnection>(),
     ),
   );
-
-  // ---- Favorites ----
-  sl.registerLazySingleton<FavoritesLocalDataSource>(
-    () => FavoritesLocalDataSourceImpl(sl()),
-  );
   sl.registerLazySingleton<FavoritesRepository>(
-    () => FavoritesRepositoryImpl(sl()),
-  );
-
-  // ---- Cart ----
-  sl.registerLazySingleton<CartLocalDataSource>(
-    () => CartLocalDataSourceImpl(sl()),
+    () => FavoritesRepository(sl()),
   );
   sl.registerLazySingleton<CartRepository>(
-    () => CartRepositoryImpl(sl()),
+    () => CartRepository(sl()),
   );
 
-  // ---- Cubits (singletons: shared app-wide state) ----
-  sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl()));
-  sl.registerLazySingleton<ProductsCubit>(() => ProductsCubit(sl()));
-  sl.registerLazySingleton<FavoritesCubit>(() => FavoritesCubit(sl()));
-  sl.registerLazySingleton<CartCubit>(() => CartCubit(sl()));
+  // ---- View models (singletons: shared app-wide state) ----
+  sl.registerLazySingleton<ThemeViewModel>(() => ThemeViewModel(sl()));
+  sl.registerLazySingleton<ProductsViewModel>(() => ProductsViewModel(sl()));
+  sl.registerLazySingleton<FavoritesViewModel>(() => FavoritesViewModel(sl()));
+  sl.registerLazySingleton<CartViewModel>(() => CartViewModel(sl()));
 }

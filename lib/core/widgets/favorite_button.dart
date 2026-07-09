@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../features/favorites/presentation/cubit/favorites_cubit.dart';
+import '../../features/favorites/viewmodel/favorites_view_model.dart';
 
-/// Heart toggle wired to [FavoritesCubit] with a small pop animation and a
+/// Heart toggle wired to [FavoritesViewModel] with a small pop animation and a
 /// clear color change between states.
 class FavoriteButton extends StatelessWidget {
   const FavoriteButton({
@@ -17,7 +17,7 @@ class FavoriteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FavoritesCubit, FavoritesState>(
+    return BlocBuilder<FavoritesViewModel, FavoritesState>(
       buildWhen: (prev, curr) =>
           prev.isFavorite(productId) != curr.isFavorite(productId),
       builder: (context, state) {
@@ -26,7 +26,7 @@ class FavoriteButton extends StatelessWidget {
           tooltip: isFav ? 'Remove from favorites' : 'Add to favorites',
           iconSize: size,
           onPressed: () =>
-              context.read<FavoritesCubit>().toggleFavorite(productId),
+              context.read<FavoritesViewModel>().toggleFavorite(productId),
           icon: AnimatedSwitcher(
             duration: const Duration(milliseconds: 250),
             transitionBuilder: (child, animation) =>

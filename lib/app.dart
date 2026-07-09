@@ -5,10 +5,10 @@ import 'core/constants/app_constants.dart';
 import 'core/di/injection.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
-import 'core/theme/theme_cubit.dart';
-import 'features/cart/presentation/cubit/cart_cubit.dart';
-import 'features/favorites/presentation/cubit/favorites_cubit.dart';
-import 'features/products/presentation/cubit/products_cubit.dart';
+import 'core/theme/theme_view_model.dart';
+import 'features/cart/viewmodel/cart_view_model.dart';
+import 'features/favorites/viewmodel/favorites_view_model.dart';
+import 'features/products/viewmodel/products_view_model.dart';
 
 class ProductCatalogApp extends StatelessWidget {
   const ProductCatalogApp({super.key});
@@ -17,12 +17,12 @@ class ProductCatalogApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: sl<ThemeCubit>()),
-        BlocProvider.value(value: sl<ProductsCubit>()..fetchProducts()),
-        BlocProvider.value(value: sl<FavoritesCubit>()..loadFavorites()),
-        BlocProvider.value(value: sl<CartCubit>()..loadCart()),
+        BlocProvider.value(value: sl<ThemeViewModel>()),
+        BlocProvider.value(value: sl<ProductsViewModel>()..fetchProducts()),
+        BlocProvider.value(value: sl<FavoritesViewModel>()..loadFavorites()),
+        BlocProvider.value(value: sl<CartViewModel>()..loadCart()),
       ],
-      child: BlocBuilder<ThemeCubit, ThemeMode>(
+      child: BlocBuilder<ThemeViewModel, ThemeMode>(
         builder: (context, themeMode) {
           return MaterialApp.router(
             title: AppConstants.appName,
