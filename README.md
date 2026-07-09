@@ -1,32 +1,22 @@
 # Product Catalog with Local Cart
 
-A Flutter app that lists products from a REST API with local search, favorites,
-product details, and a shopping cart persisted in **Sqflite**.
-
-Built as a technical task with **Cubit** state management, **Repository Pattern**,
-**Dio** for networking, and a clean, feature-first architecture.
+A Flutter app that lists products from a REST API with search, favorites,
+product details, and a shopping cart persisted in Sqflite.
 
 ## Features
 
-- 🛍️ **Home** — products from [fakestoreapi.com](https://fakestoreapi.com/products)
-  in a responsive grid (2 / 3 / 4 columns by width), pull-to-refresh, skeleton
-  loading, error state with *Try Again*, and empty state.
-- 🔍 **Search** — local, case-insensitive, debounced, with a clear button.
-- 🧭 **Sort & Filter** — sort by price / rating, filter by category chips.
-- ❤️ **Favorites** — animated heart, persisted with SharedPreferences (survives
-  restart), plus a dedicated Favorites screen.
-- 📄 **Details** — Hero image transition, tap-to-zoom full preview, rating,
-  category, description, and a persistent bottom *Add to Cart* button.
-- 🛒 **Cart (Sqflite)** — add / remove / increase / decrease quantity, subtotal
-  per item, total price, adding an existing product increments its quantity,
-  reaching zero removes it (with confirmation), clear-cart, and a live badge.
-- 🌗 **Dark mode** — light/dark themes, toggle persisted across launches.
+- Products from [fakestoreapi.com](https://fakestoreapi.com/products) in a
+  responsive grid, with pull-to-refresh, skeleton loading, and error/empty states.
+- Local, debounced, case-insensitive search.
+- Sort by price / rating and filter by category.
+- Favorites with an animated heart, persisted via SharedPreferences.
+- Product details: Hero image, tap-to-zoom, and a persistent add-to-cart bar.
+- Cart (Sqflite): add / remove / adjust quantity, subtotals, total, and a live badge.
+- Light / dark theme, persisted across launches.
 
 ## Architecture
 
-Feature-first, close to Clean Architecture. Each feature has `data` (models,
-datasources, repository impl), `domain` (entities, repository contracts), and
-`presentation` (cubit, screens, widgets) layers.
+Feature-first MVVM. Each feature has four folders:
 
 ```
 lib/
@@ -34,22 +24,22 @@ lib/
   core/           constants, network (Dio), database (Sqflite), errors,
                   utils, theme, router (go_router), di (get_it), widgets
   features/
-    products/     home + details, ProductsCubit (fetch/search/sort/filter)
-    favorites/    FavoritesCubit, SharedPreferences persistence
-    cart/         CartCubit, Sqflite persistence
+    products/     model · repository · viewmodel · view
+    favorites/    repository · viewmodel · view
+    cart/         model · repository · viewmodel · view
 ```
 
-**Rules respected:** UI never touches Dio or Sqflite directly — Cubits talk to
-Repositories only. Null safety throughout, `Equatable` states/entities, reusable
-widgets, and user-friendly error messages.
+- model — plain data classes that also parse themselves (JSON / DB rows).
+- repository — data access; talks to Dio / Sqflite / SharedPreferences directly.
+- viewmodel — a `Cubit` that owns state and calls the repository.
+- view — screens and widgets; read view models via `flutter_bloc`.
 
-## State management
+The UI never touches Dio or Sqflite directly; view models talk to repositories
+only. Repositories throw user-facing `Failure`s that view models surface to the UI.
 
-- `ProductsCubit` — initial / loading / success / error; holds `allProducts`,
-  `filteredProducts`, `categories`, `selectedCategory`, `searchQuery`, `sortType`.
-- `FavoritesCubit` — set of favorite ids, load/toggle, persisted.
-- `CartCubit` — cart items, total price, total item count; every mutation writes
-  to Sqflite then reloads so UI and DB stay in sync.
+## Stack
+
+flutter_bloc, get_it, go_router, dio, sqflite, shared_preferences, equatable.
 
 ## Run
 
@@ -57,10 +47,3 @@ widgets, and user-friendly error messages.
 flutter pub get
 flutter run
 ```
-
-## Notes
-
-- The empty-cart state uses a clean designed placeholder (the `lottie` dependency
-  is included; swap in a Lottie asset if a designed animation is preferred).
-- App icon / splash screen are left at Flutter defaults; add
-  `flutter_launcher_icons` / `flutter_native_splash` for production polish.
