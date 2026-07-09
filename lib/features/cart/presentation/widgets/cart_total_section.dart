@@ -61,7 +61,7 @@ class CartTotalSection extends StatelessWidget {
                     ..hideCurrentSnackBar()
                     ..showSnackBar(
                       const SnackBar(
-                        content: Text('Checkout is not part of this demo 🙂'),
+                        content: Text('Currently unavailable'),
                       ),
                     );
                 },
