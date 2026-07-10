@@ -81,18 +81,25 @@ class CartScreen extends StatelessWidget {
     // Back to the home screen after a successful purchase.
     router.go('/');
 
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text('Order ${order.id} placed successfully'),
-          duration: const Duration(seconds: 3),
-          action: SnackBarAction(
-            label: 'View orders',
-            onPressed: () => router.push('/orders'),
-          ),
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text('Order ${order.id} placed successfully'),
+        duration: const Duration(milliseconds: 1500),
+        action: SnackBarAction(
+          label: 'View orders',
+          onPressed: () => router.push('/orders'),
         ),
-      );
+      ),
+    );
+    // Force-dismiss after 1.5s. Flutter suppresses the SnackBar's own auto-hide
+    // timer when accessibleNavigation is on or when it appears during a route
+    // change, so we hide it manually to guarantee it disappears unattended.
+    // hideCurrentSnackBar is a safe no-op if it was already dismissed.
+    Future.delayed(
+      const Duration(milliseconds: 1500),
+      messenger.hideCurrentSnackBar,
+    );
   }
 
   @override
