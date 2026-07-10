@@ -10,8 +10,10 @@ class AppConstants {
 
   // Sqflite database.
   static const String dbName = 'app_cart.db';
-  static const int dbVersion = 1;
+  static const int dbVersion = 2;
   static const String cartTable = 'cart_items';
+  static const String ordersTable = 'orders';
+  static const String orderItemsTable = 'order_items';
 
   // Networking.
   static const Duration connectTimeout = Duration(seconds: 15);

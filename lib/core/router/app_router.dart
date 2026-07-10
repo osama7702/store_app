@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/cart/view/screens/cart_screen.dart';
 import '../../features/favorites/view/screens/favorites_screen.dart';
+import '../../features/orders/view/screens/orders_screen.dart';
 import '../../features/products/model/product.dart';
 import '../../features/products/view/screens/home_screen.dart';
 import '../../features/products/view/screens/product_details_screen.dart';
@@ -41,6 +42,10 @@ class AppRouter {
       GoRoute(
         path: '/favorites',
         builder: (context, state) => const FavoritesScreen(),
+      ),
+      GoRoute(
+        path: '/orders',
+        builder: (context, state) => const OrdersScreen(),
       ),
     ],
   );

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/utils/price_formatter.dart';
 import '../../../../core/widgets/custom_error_widget.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
+import '../../../orders/viewmodel/orders_view_model.dart';
 import '../../viewmodel/cart_view_model.dart';
 import '../widgets/cart_item_tile.dart';
 import '../widgets/cart_total_section.dart';
@@ -35,6 +38,50 @@ class CartScreen extends StatelessWidget {
       ),
     );
     return result ?? false;
+  }
+
+  /// Places the current cart as an order (persisted locally), then clears the
+  /// cart and confirms to the user.
+  Future<void> _checkout(BuildContext context, CartState cartState) async {
+    final confirmed = await _confirm(
+      context,
+      title: 'Place order?',
+      message: 'Confirm your order of ${cartState.totalItems} item(s) for '
+          '${PriceFormatter.format(cartState.totalPrice)}?',
+      confirmLabel: 'Place order',
+    );
+    if (!confirmed || !context.mounted) return;
+
+    final ordersViewModel = context.read<OrdersViewModel>();
+    final cartViewModel = context.read<CartViewModel>();
+    final order =
+        await ordersViewModel.placeOrder(cartState.items, DateTime.now());
+    if (!context.mounted) return;
+
+    if (order == null) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(content: Text('Could not place your order.')),
+        );
+      return;
+    }
+
+    await cartViewModel.clearCart();
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text('Order ${order.id} placed successfully'),
+          duration: const Duration(seconds: 3),
+          action: SnackBarAction(
+            label: 'View orders',
+            onPressed: () => context.push('/orders'),
+          ),
+        ),
+      );
   }
 
   @override
@@ -128,9 +175,17 @@ class CartScreen extends StatelessWidget {
                       },
                     ),
                   ),
-                  CartTotalSection(
-                    totalPrice: state.totalPrice,
-                    totalItems: state.totalItems,
+                  BlocBuilder<OrdersViewModel, OrdersState>(
+                    buildWhen: (p, c) => p.status != c.status,
+                    builder: (context, ordersState) {
+                      return CartTotalSection(
+                        totalPrice: state.totalPrice,
+                        totalItems: state.totalItems,
+                        isPlacingOrder:
+                            ordersState.status == OrdersStatus.placing,
+                        onCheckout: () => _checkout(context, state),
+                      );
+                    },
                   ),
                 ],
               );

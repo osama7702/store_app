@@ -8,10 +8,14 @@ class CartTotalSection extends StatelessWidget {
     super.key,
     required this.totalPrice,
     required this.totalItems,
+    required this.onCheckout,
+    this.isPlacingOrder = false,
   });
 
   final double totalPrice;
   final int totalItems;
+  final VoidCallback onCheckout;
+  final bool isPlacingOrder;
 
   @override
   Widget build(BuildContext context) {
@@ -56,17 +60,15 @@ class CartTotalSection extends StatelessWidget {
               width: double.infinity,
               height: 52,
               child: ElevatedButton.icon(
-                onPressed: () {
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                      const SnackBar(
-                        content: Text('Currently unavailable'),
-                      ),
-                    );
-                },
-                icon: const Icon(Icons.lock_outline_rounded),
-                label: const Text('Checkout'),
+                onPressed: isPlacingOrder ? null : onCheckout,
+                icon: isPlacingOrder
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.shopping_bag_outlined),
+                label: Text(isPlacingOrder ? 'Placing order...' : 'Checkout'),
               ),
             ),
           ],

@@ -6,6 +6,8 @@ import '../../features/cart/repository/cart_repository.dart';
 import '../../features/cart/viewmodel/cart_view_model.dart';
 import '../../features/favorites/repository/favorites_repository.dart';
 import '../../features/favorites/viewmodel/favorites_view_model.dart';
+import '../../features/orders/repository/orders_repository.dart';
+import '../../features/orders/viewmodel/orders_view_model.dart';
 import '../../features/products/repository/products_repository.dart';
 import '../../features/products/viewmodel/products_view_model.dart';
 import '../database/app_database.dart';
@@ -39,10 +41,14 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<CartRepository>(
     () => CartRepository(sl()),
   );
+  sl.registerLazySingleton<OrdersRepository>(
+    () => OrdersRepository(sl()),
+  );
 
   // ---- View models (singletons: shared app-wide state) ----
   sl.registerLazySingleton<ThemeViewModel>(() => ThemeViewModel(sl()));
   sl.registerLazySingleton<ProductsViewModel>(() => ProductsViewModel(sl()));
   sl.registerLazySingleton<FavoritesViewModel>(() => FavoritesViewModel(sl()));
   sl.registerLazySingleton<CartViewModel>(() => CartViewModel(sl()));
+  sl.registerLazySingleton<OrdersViewModel>(() => OrdersViewModel(sl()));
 }

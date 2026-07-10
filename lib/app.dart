@@ -8,6 +8,7 @@ import 'core/theme/app_theme.dart';
 import 'core/theme/theme_view_model.dart';
 import 'features/cart/viewmodel/cart_view_model.dart';
 import 'features/favorites/viewmodel/favorites_view_model.dart';
+import 'features/orders/viewmodel/orders_view_model.dart';
 import 'features/products/viewmodel/products_view_model.dart';
 
 class ProductCatalogApp extends StatelessWidget {
@@ -21,6 +22,7 @@ class ProductCatalogApp extends StatelessWidget {
         BlocProvider.value(value: sl<ProductsViewModel>()..fetchProducts()),
         BlocProvider.value(value: sl<FavoritesViewModel>()..loadFavorites()),
         BlocProvider.value(value: sl<CartViewModel>()..loadCart()),
+        BlocProvider.value(value: sl<OrdersViewModel>()..loadOrders()),
       ],
       child: BlocBuilder<ThemeViewModel, ThemeMode>(
         builder: (context, themeMode) {

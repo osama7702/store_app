@@ -27,6 +27,11 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Product Catalog'),
         actions: [
           IconButton(
+            tooltip: 'My orders',
+            icon: const Icon(Icons.receipt_long_outlined),
+            onPressed: () => context.push('/orders'),
+          ),
+          IconButton(
             tooltip: 'Favorites',
             icon: const Icon(Icons.favorite_border_rounded),
             onPressed: () => context.push('/favorites'),
