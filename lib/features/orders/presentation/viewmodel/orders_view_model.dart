@@ -15,9 +15,9 @@ class OrdersViewModel extends Cubit<OrdersState> {
   OrdersViewModel({
     required GetOrders getOrders,
     required PlaceOrder placeOrder,
-  })  : _getOrders = getOrders,
-        _placeOrder = placeOrder,
-        super(const OrdersState());
+  }) : _getOrders = getOrders,
+       _placeOrder = placeOrder,
+       super(const OrdersState());
 
   final GetOrders _getOrders;
   final PlaceOrder _placeOrder;
@@ -26,10 +26,12 @@ class OrdersViewModel extends Cubit<OrdersState> {
     emit(state.copyWith(status: OrdersStatus.loading, errorMessage: null));
     final result = await _getOrders(const NoParams());
     result.fold(
-      (failure) => emit(state.copyWith(
-        status: OrdersStatus.error,
-        errorMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: OrdersStatus.error,
+          errorMessage: failure.message,
+        ),
+      ),
       (orders) =>
           emit(state.copyWith(status: OrdersStatus.success, orders: orders)),
     );
@@ -45,18 +47,22 @@ class OrdersViewModel extends Cubit<OrdersState> {
     );
     return result.fold(
       (failure) {
-        emit(state.copyWith(
-          status: OrdersStatus.error,
-          errorMessage: failure.message,
-        ));
+        emit(
+          state.copyWith(
+            status: OrdersStatus.error,
+            errorMessage: failure.message,
+          ),
+        );
         return null;
       },
       (order) {
-        emit(state.copyWith(
-          status: OrdersStatus.success,
-          orders: [order, ...state.orders],
-          lastOrder: order,
-        ));
+        emit(
+          state.copyWith(
+            status: OrdersStatus.success,
+            orders: [order, ...state.orders],
+            lastOrder: order,
+          ),
+        );
         return order;
       },
     );

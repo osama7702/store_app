@@ -76,8 +76,11 @@ class ProductDetailsScreen extends StatelessWidget {
                   children: [
                     _CategoryChip(label: product.category),
                     const Spacer(),
-                    Icon(Icons.star_rounded,
-                        size: 20, color: Colors.amber.shade600),
+                    Icon(
+                      Icons.star_rounded,
+                      size: 20,
+                      color: Colors.amber.shade600,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '${product.rating.rate} (${product.rating.count})',
@@ -88,8 +91,10 @@ class ProductDetailsScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   product.title,
-                  style: theme.textTheme.titleLarge
-                      ?.copyWith(fontWeight: FontWeight.bold, height: 1.3),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    height: 1.3,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Text(
@@ -102,8 +107,9 @@ class ProductDetailsScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(
                   'Description',
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(fontWeight: FontWeight.w700),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -144,10 +150,12 @@ class ProductDetailsScreen extends StatelessWidget {
                       : _DetailsStepper(
                           key: const ValueKey('stepper'),
                           quantity: quantity,
-                          onIncrement: () =>
-                              context.read<CartViewModel>().increment(product.id),
-                          onDecrement: () =>
-                              context.read<CartViewModel>().decrement(product.id),
+                          onIncrement: () => context
+                              .read<CartViewModel>()
+                              .increment(product.id),
+                          onDecrement: () => context
+                              .read<CartViewModel>()
+                              .decrement(product.id),
                           onViewCart: () => context.push('/cart'),
                         ),
                 );

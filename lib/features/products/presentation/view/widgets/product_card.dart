@@ -9,11 +9,7 @@ import '../../../domain/entities/product.dart';
 
 /// Grid card showing image, title, price, favorite and add-to-cart.
 class ProductCard extends StatelessWidget {
-  const ProductCard({
-    super.key,
-    required this.product,
-    required this.onTap,
-  });
+  const ProductCard({super.key, required this.product, required this.onTap});
 
   final Product product;
   final VoidCallback onTap;
@@ -75,8 +71,10 @@ class ProductCard extends StatelessWidget {
                     product.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w600, height: 1.2),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      height: 1.2,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Row(
@@ -93,13 +91,17 @@ class ProductCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      Icon(Icons.star_rounded,
-                          size: 16, color: Colors.amber.shade600),
+                      Icon(
+                        Icons.star_rounded,
+                        size: 16,
+                        color: Colors.amber.shade600,
+                      ),
                       const SizedBox(width: 2),
                       Text(
                         product.rating.rate.toStringAsFixed(1),
-                        style: theme.textTheme.labelMedium
-                            ?.copyWith(fontWeight: FontWeight.w600),
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),

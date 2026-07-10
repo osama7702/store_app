@@ -46,7 +46,8 @@ class CartScreen extends StatelessWidget {
     final confirmed = await _confirm(
       context,
       title: 'Place order?',
-      message: 'Confirm your order of ${cartState.totalItems} item(s) for '
+      message:
+          'Confirm your order of ${cartState.totalItems} item(s) for '
           '${PriceFormatter.format(cartState.totalPrice)}?',
       confirmLabel: 'Place order',
     );
@@ -54,8 +55,10 @@ class CartScreen extends StatelessWidget {
 
     final ordersViewModel = context.read<OrdersViewModel>();
     final cartViewModel = context.read<CartViewModel>();
-    final order =
-        await ordersViewModel.placeOrder(cartState.items, DateTime.now());
+    final order = await ordersViewModel.placeOrder(
+      cartState.items,
+      DateTime.now(),
+    );
     if (!context.mounted) return;
 
     if (order == null) {
@@ -155,7 +158,8 @@ class CartScreen extends StatelessWidget {
                         final item = state.items[index];
                         return CartItemTile(
                           item: item,
-                          onIncrement: () => viewModel.increment(item.productId),
+                          onIncrement: () =>
+                              viewModel.increment(item.productId),
                           onDecrement: () async {
                             if (item.quantity <= 1) {
                               final ok = await _confirm(
@@ -165,7 +169,9 @@ class CartScreen extends StatelessWidget {
                                     'Reduce to zero and remove "${item.title}" from the cart?',
                                 confirmLabel: 'Remove',
                               );
-                              if (ok) await viewModel.removeItem(item.productId);
+                              if (ok) {
+                                await viewModel.removeItem(item.productId);
+                              }
                             } else {
                               await viewModel.decrement(item.productId);
                             }

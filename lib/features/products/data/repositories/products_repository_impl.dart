@@ -13,8 +13,8 @@ class ProductsRepositoryImpl implements ProductsRepository {
   ProductsRepositoryImpl({
     required ProductsRemoteDataSource remoteDataSource,
     required NetworkInfo networkInfo,
-  })  : _remoteDataSource = remoteDataSource,
-        _networkInfo = networkInfo;
+  }) : _remoteDataSource = remoteDataSource,
+       _networkInfo = networkInfo;
 
   final ProductsRemoteDataSource _remoteDataSource;
   final NetworkInfo _networkInfo;

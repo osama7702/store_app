@@ -13,9 +13,9 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
   FavoritesViewModel({
     required GetFavorites getFavorites,
     required SaveFavorites saveFavorites,
-  })  : _getFavorites = getFavorites,
-        _saveFavorites = saveFavorites,
-        super(const FavoritesState());
+  }) : _getFavorites = getFavorites,
+       _saveFavorites = saveFavorites,
+       super(const FavoritesState());
 
   final GetFavorites _getFavorites;
   final SaveFavorites _saveFavorites;
@@ -26,8 +26,7 @@ class FavoritesViewModel extends Cubit<FavoritesState> {
     result.fold(
       (failure) =>
           emit(state.copyWith(isLoading: false, errorMessage: failure.message)),
-      (ids) =>
-          emit(state.copyWith(favoriteIds: ids.toSet(), isLoading: false)),
+      (ids) => emit(state.copyWith(favoriteIds: ids.toSet(), isLoading: false)),
     );
   }
 

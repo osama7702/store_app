@@ -13,8 +13,7 @@ class CartState extends Equatable {
   final List<CartItem> items;
   final String? errorMessage;
 
-  double get totalPrice =>
-      items.fold(0, (sum, item) => sum + item.subtotal);
+  double get totalPrice => items.fold(0, (sum, item) => sum + item.subtotal);
 
   int get totalItems => items.fold(0, (sum, item) => sum + item.quantity);
 

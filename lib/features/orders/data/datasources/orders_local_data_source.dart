@@ -42,8 +42,10 @@ class OrdersLocalDataSourceImpl implements OrdersLocalDataSource {
   Future<List<OrderModel>> getOrders() async {
     try {
       final db = await _appDatabase.database;
-      final orderRows =
-          await db.query(_ordersTable, orderBy: 'created_at DESC');
+      final orderRows = await db.query(
+        _ordersTable,
+        orderBy: 'created_at DESC',
+      );
       final orders = <OrderModel>[];
       for (final row in orderRows) {
         final itemRows = await db.query(

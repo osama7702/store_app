@@ -50,9 +50,9 @@ class OrdersScreen extends StatelessWidget {
                 itemCount: state.orders.length,
                 separatorBuilder: (_, _) => const SizedBox(height: 12),
                 itemBuilder: (context, index) {
-                  return _OrderCard(order: state.orders[index])
-                      .animate()
-                      .fadeIn(duration: 250.ms);
+                  return _OrderCard(
+                    order: state.orders[index],
+                  ).animate().fadeIn(duration: 250.ms);
                 },
               );
           }
@@ -81,14 +81,18 @@ class _OrderCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.receipt_long_rounded,
-                  size: 20, color: theme.colorScheme.primary),
+              Icon(
+                Icons.receipt_long_rounded,
+                size: 20,
+                color: theme.colorScheme.primary,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   order.id,
-                  style: theme.textTheme.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               Text(

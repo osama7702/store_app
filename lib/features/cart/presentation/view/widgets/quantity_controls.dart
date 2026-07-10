@@ -30,8 +30,9 @@ class QuantityControls extends StatelessWidget {
             child: Text(
               '$quantity',
               key: ValueKey(quantity),
-              style: theme.textTheme.titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           _IconBtn(icon: Icons.add_rounded, onTap: onIncrement),

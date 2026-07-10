@@ -62,10 +62,7 @@ class ProductsGrid extends StatelessWidget {
               if (isLoading) return card;
               return card
                   .animate()
-                  .fadeIn(
-                    duration: 350.ms,
-                    delay: (40 * (index % columns)).ms,
-                  )
+                  .fadeIn(duration: 350.ms, delay: (40 * (index % columns)).ms)
                   .slideY(begin: 0.1, end: 0, curve: Curves.easeOut);
             },
           ),

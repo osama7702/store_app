@@ -24,12 +24,12 @@ class CartViewModel extends Cubit<CartState> {
     required UpdateCartQuantity updateCartQuantity,
     required RemoveFromCart removeFromCart,
     required ClearCart clearCart,
-  })  : _getCartItems = getCartItems,
-        _addToCart = addToCart,
-        _updateCartQuantity = updateCartQuantity,
-        _removeFromCart = removeFromCart,
-        _clearCart = clearCart,
-        super(const CartState());
+  }) : _getCartItems = getCartItems,
+       _addToCart = addToCart,
+       _updateCartQuantity = updateCartQuantity,
+       _removeFromCart = removeFromCart,
+       _clearCart = clearCart,
+       super(const CartState());
 
   final GetCartItems _getCartItems;
   final AddToCart _addToCart;
@@ -44,38 +44,43 @@ class CartViewModel extends Cubit<CartState> {
       (failure) => emit(
         state.copyWith(status: CartStatus.error, errorMessage: failure.message),
       ),
-      (items) =>
-          emit(state.copyWith(status: CartStatus.success, items: items)),
+      (items) => emit(state.copyWith(status: CartStatus.success, items: items)),
     );
   }
 
   /// Adds a product to the cart. If it already exists the quantity is
   /// incremented rather than adding a duplicate row.
   Future<void> addProduct(Product product) async {
-    await _mutate(_addToCart(
-      CartItem(
-        productId: product.id,
-        title: product.title,
-        price: product.price,
-        image: product.image,
-        quantity: 1,
+    await _mutate(
+      _addToCart(
+        CartItem(
+          productId: product.id,
+          title: product.title,
+          price: product.price,
+          image: product.image,
+          quantity: 1,
+        ),
       ),
-    ));
+    );
   }
 
   Future<void> increment(int productId) async {
     final current = state.quantityOf(productId);
-    await _mutate(_updateCartQuantity(
-      UpdateCartQuantityParams(productId: productId, quantity: current + 1),
-    ));
+    await _mutate(
+      _updateCartQuantity(
+        UpdateCartQuantityParams(productId: productId, quantity: current + 1),
+      ),
+    );
   }
 
   /// Decrements quantity; removes the item entirely when it reaches zero.
   Future<void> decrement(int productId) async {
     final current = state.quantityOf(productId);
-    await _mutate(_updateCartQuantity(
-      UpdateCartQuantityParams(productId: productId, quantity: current - 1),
-    ));
+    await _mutate(
+      _updateCartQuantity(
+        UpdateCartQuantityParams(productId: productId, quantity: current - 1),
+      ),
+    );
   }
 
   Future<void> removeItem(int productId) async {
@@ -91,8 +96,7 @@ class CartViewModel extends Cubit<CartState> {
   Future<void> _mutate(Future<Either<Failure, Unit>> action) async {
     final result = await action;
     await result.fold(
-      (failure) async =>
-          emit(state.copyWith(errorMessage: failure.message)),
+      (failure) async => emit(state.copyWith(errorMessage: failure.message)),
       (_) async {
         final items = await _getCartItems(const NoParams());
         items.fold(

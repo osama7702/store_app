@@ -50,8 +50,9 @@ class CartItemTile extends StatelessWidget {
                   item.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -83,8 +84,10 @@ class CartItemTile extends StatelessWidget {
           ),
           IconButton(
             tooltip: 'Remove',
-            icon: Icon(Icons.delete_outline_rounded,
-                color: theme.colorScheme.error),
+            icon: Icon(
+              Icons.delete_outline_rounded,
+              color: theme.colorScheme.error,
+            ),
             onPressed: onRemove,
           ),
         ],

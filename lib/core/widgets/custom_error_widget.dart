@@ -26,8 +26,9 @@ class CustomErrorWidget extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Oops!',
-              style: theme.textTheme.titleLarge
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             Text(

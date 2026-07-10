@@ -42,9 +42,9 @@ class HomeScreen extends StatelessWidget {
               final isDark = mode == ThemeMode.dark;
               return IconButton(
                 tooltip: 'Toggle theme',
-                icon: Icon(isDark
-                    ? Icons.light_mode_rounded
-                    : Icons.dark_mode_rounded),
+                icon: Icon(
+                  isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                ),
                 onPressed: () => context.read<ThemeViewModel>().toggle(),
               );
             },
@@ -109,7 +109,8 @@ class HomeScreen extends StatelessWidget {
         );
       case ProductsStatus.success:
         if (state.filteredProducts.isEmpty) {
-          final searching = state.searchQuery.isNotEmpty ||
+          final searching =
+              state.searchQuery.isNotEmpty ||
               state.selectedCategory != kAllCategories;
           return RefreshIndicator(
             onRefresh: productsViewModel.refresh,
@@ -169,7 +170,9 @@ class _SortButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: active
               ? theme.colorScheme.primary
-              : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              : theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.5,
+                ),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Icon(

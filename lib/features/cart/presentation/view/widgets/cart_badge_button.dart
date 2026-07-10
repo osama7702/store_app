@@ -20,9 +20,7 @@ class CartBadgeButton extends StatelessWidget {
         return badges.Badge(
           position: badges.BadgePosition.topEnd(top: 4, end: 4),
           showBadge: count > 0,
-          badgeStyle: badges.BadgeStyle(
-            badgeColor: theme.colorScheme.error,
-          ),
+          badgeStyle: badges.BadgeStyle(badgeColor: theme.colorScheme.error),
           badgeContent: Text(
             '$count',
             style: TextStyle(

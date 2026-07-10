@@ -6,11 +6,7 @@ import '../../features/favorites/presentation/viewmodel/favorites_view_model.dar
 /// Heart toggle wired to [FavoritesViewModel] with a small pop animation and a
 /// clear color change between states.
 class FavoriteButton extends StatelessWidget {
-  const FavoriteButton({
-    super.key,
-    required this.productId,
-    this.size = 24,
-  });
+  const FavoriteButton({super.key, required this.productId, this.size = 24});
 
   final int productId;
   final double size;

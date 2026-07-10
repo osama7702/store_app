@@ -20,10 +20,12 @@ class ProductsViewModel extends Cubit<ProductsState> {
     emit(state.copyWith(status: ProductsStatus.loading, failureMessage: null));
     final result = await _getProducts(const NoParams());
     result.fold(
-      (failure) => emit(state.copyWith(
-        status: ProductsStatus.error,
-        failureMessage: failure.message,
-      )),
+      (failure) => emit(
+        state.copyWith(
+          status: ProductsStatus.error,
+          failureMessage: failure.message,
+        ),
+      ),
       (products) {
         final categories = _extractCategories(products);
         emit(

@@ -28,8 +28,7 @@ class OrderModel extends Order {
       items: items,
       total: (map['total'] as num).toDouble(),
       itemCount: map['item_count'] as int,
-      createdAt:
-          DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
     );
   }
 

@@ -65,10 +65,7 @@ Future<void> initDependencies() async {
 
   // ---- Repositories (contract ← implementation) ----
   sl.registerLazySingleton<ProductsRepository>(
-    () => ProductsRepositoryImpl(
-      remoteDataSource: sl(),
-      networkInfo: sl(),
-    ),
+    () => ProductsRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
   );
   sl.registerLazySingleton<CartRepository>(() => CartRepositoryImpl(sl()));
   sl.registerLazySingleton<FavoritesRepository>(
