@@ -55,25 +55,139 @@ class CartTotalSection extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 14),
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: ElevatedButton.icon(
-                onPressed: isPlacingOrder ? null : onCheckout,
-                icon: isPlacingOrder
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.shopping_bag_outlined),
-                label: Text(isPlacingOrder ? 'Placing order...' : 'Checkout'),
-              ),
+            const SizedBox(height: 16),
+            _CheckoutButton(
+              totalPrice: totalPrice,
+              isPlacingOrder: isPlacingOrder,
+              onCheckout: onCheckout,
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Gradient checkout button with a trailing price pill. Shows an inline spinner
+/// while the order is being placed and disables interaction meanwhile.
+class _CheckoutButton extends StatelessWidget {
+  const _CheckoutButton({
+    required this.totalPrice,
+    required this.isPlacingOrder,
+    required this.onCheckout,
+  });
+
+  final double totalPrice;
+  final bool isPlacingOrder;
+  final VoidCallback onCheckout;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final gradientEnd = Color.lerp(scheme.primary, Colors.black, 0.18)!;
+    final radius = BorderRadius.circular(16);
+
+    return Semantics(
+      button: true,
+      enabled: !isPlacingOrder,
+      label: 'Checkout',
+      child: Opacity(
+        opacity: isPlacingOrder ? 0.7 : 1,
+        child: Material(
+          color: Colors.transparent,
+          child: Ink(
+            height: 58,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [scheme.primary, gradientEnd],
+              ),
+              borderRadius: radius,
+              boxShadow: [
+                BoxShadow(
+                  color: scheme.primary.withValues(alpha: 0.35),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: InkWell(
+              borderRadius: radius,
+              onTap: isPlacingOrder ? null : onCheckout,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: isPlacingOrder
+                    ? _buildPlacing(scheme)
+                    : _buildIdle(context, scheme),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlacing(ColorScheme scheme) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation(scheme.onPrimary),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          'Placing order...',
+          style: TextStyle(
+            color: scheme.onPrimary,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIdle(BuildContext context, ColorScheme scheme) {
+    return Row(
+      children: [
+        Spacer(),
+        Icon(Icons.shopping_bag_outlined, color: scheme.onPrimary, size: 22),
+        const SizedBox(width: 10),
+        Text(
+          'Checkout',
+          style: TextStyle(
+            color: scheme.onPrimary,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+            letterSpacing: 0.2,
+          ),
+        ),
+        const Spacer(),
+        // // Price pill on the trailing edge.
+        // Container(
+        //   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        //   decoration: BoxDecoration(
+        //     color: scheme.onPrimary.withValues(alpha: 0.18),
+        //     borderRadius: BorderRadius.circular(12),
+        //   ),
+        //   child: Text(
+        //     PriceFormatter.format(totalPrice),
+        //     style: TextStyle(
+        //       color: scheme.onPrimary,
+        //       fontWeight: FontWeight.bold,
+        //       fontSize: 15,
+        //     ),
+        //   ),
+        // ),
+        // const SizedBox(width: 8),
+        Icon(Icons.arrow_forward_rounded, color: scheme.onPrimary, size: 20),
+      ],
     );
   }
 }
