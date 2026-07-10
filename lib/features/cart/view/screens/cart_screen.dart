@@ -70,7 +70,15 @@ class CartScreen extends StatelessWidget {
     await cartViewModel.clearCart();
     if (!context.mounted) return;
 
-    ScaffoldMessenger.of(context)
+    // Capture app-level references before navigating away, so the confirmation
+    // survives this screen being disposed.
+    final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.of(context);
+
+    // Back to the home screen after a successful purchase.
+    router.go('/');
+
+    messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
@@ -78,7 +86,7 @@ class CartScreen extends StatelessWidget {
           duration: const Duration(seconds: 3),
           action: SnackBarAction(
             label: 'View orders',
-            onPressed: () => context.push('/orders'),
+            onPressed: () => router.push('/orders'),
           ),
         ),
       );

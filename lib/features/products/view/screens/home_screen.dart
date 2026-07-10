@@ -24,7 +24,8 @@ class HomeScreen extends StatelessWidget {
     final productsViewModel = context.read<ProductsViewModel>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Product Catalog'),
+        // title: const Text('Product Catalog'),
+        title: const Text('Products'),
         actions: [
           IconButton(
             tooltip: 'My orders',
