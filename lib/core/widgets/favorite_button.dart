@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../features/favorites/viewmodel/favorites_view_model.dart';
+import '../../features/favorites/presentation/viewmodel/favorites_view_model.dart';
 
 /// Heart toggle wired to [FavoritesViewModel] with a small pop animation and a
 /// clear color change between states.

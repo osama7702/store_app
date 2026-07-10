@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/cart/view/screens/cart_screen.dart';
-import '../../features/favorites/view/screens/favorites_screen.dart';
-import '../../features/orders/view/screens/orders_screen.dart';
-import '../../features/products/model/product.dart';
-import '../../features/products/view/screens/home_screen.dart';
-import '../../features/products/view/screens/product_details_screen.dart';
+import '../../features/cart/presentation/view/screens/cart_screen.dart';
+import '../../features/favorites/presentation/view/screens/favorites_screen.dart';
+import '../../features/orders/presentation/view/screens/orders_screen.dart';
+import '../../features/products/domain/entities/product.dart';
+import '../../features/products/presentation/view/screens/home_screen.dart';
+import '../../features/products/presentation/view/screens/product_details_screen.dart';
 import '../widgets/empty_state_widget.dart';
 
 /// Central go_router configuration for the app.

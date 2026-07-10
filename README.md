@@ -12,34 +12,47 @@ product details, and a shopping cart persisted in Sqflite.
 - Favorites with an animated heart, persisted via SharedPreferences.
 - Product details: Hero image, tap-to-zoom, and a persistent add-to-cart bar.
 - Cart (Sqflite): add / remove / adjust quantity, subtotals, total, and a live badge.
+- Checkout that places an order and lists order history (Sqflite).
 - Light / dark theme, persisted across launches.
 
 ## Architecture
 
-Feature-first MVVM. Each feature has four folders:
+Feature-first **Clean Architecture** with three layers per feature —
+`data`, `domain`, and `presentation` — and a single dependency direction:
+`presentation → domain ← data` (the domain layer depends on nothing external).
 
 ```
 lib/
   main.dart / app.dart
-  core/           constants, network (Dio), database (Sqflite), errors,
+  core/           constants, network (Dio + NetworkInfo), database (Sqflite),
+                  errors (failures + exceptions), usecases (base contract),
                   utils, theme, router (go_router), di (get_it), widgets
   features/
-    products/     model · repository · viewmodel · view
-    favorites/    repository · viewmodel · view
-    cart/         model · repository · viewmodel · view
+    products/
+      domain/         entities · repositories (abstract) · usecases
+      data/           models · datasources · repositories (impl)
+      presentation/   viewmodel (Cubit) · view (screens · widgets)
+    cart/         domain · data · presentation
+    favorites/    domain · data · presentation
+    orders/       domain · data · presentation
 ```
 
-- model — plain data classes that also parse themselves (JSON / DB rows).
-- repository — data access; talks to Dio / Sqflite / SharedPreferences directly.
-- viewmodel — a `Cubit` that owns state and calls the repository.
-- view — screens and widgets; read view models via `flutter_bloc`.
+- **domain** — the business core. `entities` are pure data classes;
+  `repositories` are abstract contracts; `usecases` are single, named
+  operations (e.g. `GetProducts`, `AddToCart`, `PlaceOrder`).
+- **data** — `models` extend entities and add JSON / DB-row mapping;
+  `datasources` isolate Dio / Sqflite / SharedPreferences; repository
+  implementations translate low-level `Exception`s into user-facing `Failure`s.
+- **presentation** — a `Cubit` view model depends on **use cases** (never a
+  repository directly); `view` reads view models via `flutter_bloc`.
 
-The UI never touches Dio or Sqflite directly; view models talk to repositories
-only. Repositories throw user-facing `Failure`s that view models surface to the UI.
+Error handling is explicit: use cases and repositories return
+`Either<Failure, T>` (via `fpdart`), so callers must handle both paths. The UI
+never touches Dio or Sqflite directly.
 
 ## Stack
 
-flutter_bloc, get_it, go_router, dio, sqflite, shared_preferences, equatable.
+flutter_bloc, get_it, go_router, dio, sqflite, shared_preferences, fpdart, equatable.
 
 ## Run
 

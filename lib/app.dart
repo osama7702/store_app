@@ -6,10 +6,10 @@ import 'core/di/injection.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_view_model.dart';
-import 'features/cart/viewmodel/cart_view_model.dart';
-import 'features/favorites/viewmodel/favorites_view_model.dart';
-import 'features/orders/viewmodel/orders_view_model.dart';
-import 'features/products/viewmodel/products_view_model.dart';
+import 'features/cart/presentation/viewmodel/cart_view_model.dart';
+import 'features/favorites/presentation/viewmodel/favorites_view_model.dart';
+import 'features/orders/presentation/viewmodel/orders_view_model.dart';
+import 'features/products/presentation/viewmodel/products_view_model.dart';
 
 class ProductCatalogApp extends StatelessWidget {
   const ProductCatalogApp({super.key});
